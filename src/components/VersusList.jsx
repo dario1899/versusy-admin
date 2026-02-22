@@ -1,9 +1,5 @@
+import { getImageSrc } from '../utils/imageSrc'
 import './VersusList.css'
-
-function imageUrl(item, side) {
-  const key = side === 1 ? 'image1Url' : 'image2Url'
-  return item[key] || item[`image${side}`] || null
-}
 
 function name(item, side) {
   const key = side === 1 ? 'name1' : 'name2'
@@ -26,8 +22,8 @@ export default function VersusList({ items, onEdit, onDelete }) {
           <div className="versus-card-images">
             <div className="versus-card-side">
               <div className="versus-card-image-wrap">
-                {imageUrl(item, 1) ? (
-                  <img src={imageUrl(item, 1)} alt={name(item, 1)} />
+                {getImageSrc(item, 1) ? (
+                  <img src={getImageSrc(item, 1)} alt={name(item, 1)} />
                 ) : (
                   <div className="versus-card-placeholder">No image</div>
                 )}
@@ -37,8 +33,8 @@ export default function VersusList({ items, onEdit, onDelete }) {
             <span className="versus-card-vs">VS</span>
             <div className="versus-card-side">
               <div className="versus-card-image-wrap">
-                {imageUrl(item, 2) ? (
-                  <img src={imageUrl(item, 2)} alt={name(item, 2)} />
+                {getImageSrc(item, 2) ? (
+                  <img src={getImageSrc(item, 2)} alt={name(item, 2)} />
                 ) : (
                   <div className="versus-card-placeholder">No image</div>
                 )}
