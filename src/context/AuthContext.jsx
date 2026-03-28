@@ -8,8 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken')
-    if (token) setUser({ username: 'Admin' })
+    if (api.getStoredAccessToken()) setUser({ username: 'Admin' })
     setLoading(false)
   }, [])
 

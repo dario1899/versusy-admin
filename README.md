@@ -11,19 +11,23 @@ npm run dev
 
 App runs at `http://localhost:3001`. API calls are proxied to `http://localhost:8080` under `/api`.
 
+## API paths
+
+All URL paths relative to `VITE_API_BASE` or `/api` are defined in **`src/api/routes.js`** (`apiRoutes`). Change that file if your Spring app uses different prefixes or segments.
+
 ## Backend API (Spring Boot)
 
-The app expects the following endpoints on `localhost:8080`. Mount them under `/api` (e.g. `/api/auth/login`) or adjust the proxy in `vite.config.js`.
+The app expects the following endpoints on `localhost:8080`. Mount them under `/api` (e.g. `/api/auth/login`) or adjust `src/api/routes.js` / the Vite proxy.
 
 ### Auth
 
-- **POST `/api/auth/login`**  
-  Body: `{ "username": "string", "password": "string" }`  
-  - Success: `200` and optionally `{ "token": "jwt..." }` or `{ "username": "..." }`. If `token` is present, the frontend stores it and sends `Authorization: Bearer <token>` on subsequent requests.  
+- **POST `/api/v1/auth/login`** (see `src/api/client.js` for the exact path)  
+  Body: `{ "email": "string", "password": "string" }`  
+  - Success: `200` with JSON including **`accessToken`** (required) and optionally **`refreshToken`**. The app stores both in `localStorage` and sends `Authorization: Bearer <accessToken>` on every versus (and other authenticated) request.  
   - Failure: `401` or `4xx` with optional `{ "message": "..." }`.
 
-- **POST `/api/auth/logout`** (optional)  
-  Clears server session if you use session-based auth.
+- **POST `/api/v1/auth/logout`** (optional)  
+  Called with the same Bearer header if present; the app always clears stored tokens locally afterward.
 
 ### Versus (protected)
 
@@ -45,6 +49,12 @@ The app expects the following endpoints on `localhost:8080`. Mount them under `/
 
 - **DELETE `/api/versus/:id`**  
   Returns `204` or `200` on success.
+
+### Users (protected)
+
+- **GET `/api/users`** – List users (array or Spring `Page` / `_embedded.users`).
+- **POST `/api/users`** – Create user; body `{ "email", "password" }` (adjust `createUser` in `client.js` if your DTO differs).
+- **DELETE `/api/users/:id`** – Delete user by id.
 
 Ensure CORS allows `http://localhost:3001` if you call the backend by origin instead of using the Vite proxy.
 

@@ -82,7 +82,9 @@
   color: var(--text-muted);
 }
 
-.versus-form input[type="text"] {
+.versus-form input[type="text"],
+.versus-form input[type="email"],
+.versus-form input[type="password"] {
   display: block;
   width: 100%;
   margin-top: 0.35rem;
@@ -94,7 +96,9 @@
   font-size: 1rem;
 }
 
-.versus-form input[type="text"]:focus {
+.versus-form input[type="text"]:focus,
+.versus-form input[type="email"]:focus,
+.versus-form input[type="password"]:focus {
   outline: none;
   border-color: var(--accent);
 }
@@ -104,6 +108,11 @@
   margin-top: 0.35rem;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.user-form-full {
+  display: block;
+  margin-bottom: 1rem;
 }
 
 .versus-form-actions {

@@ -1,48 +1,91 @@
-const API_BASE = import.meta.env.VITE_API_BASE || '/api'
+import { apiRoutes } from './routes'
 
-function getAuthHeaders() {
-  const token = localStorage.getItem('authToken')
-  const headers = { 'Content-Type': 'application/json' }
+const STORAGE_ACCESS = 'accessToken'
+const STORAGE_REFRESH = 'refreshToken'
+
+export function getStoredAccessToken() {
+  return localStorage.getItem(STORAGE_ACCESS) || localStorage.getItem('authToken')
+}
+
+export function getStoredRefreshToken() {
+  return localStorage.getItem(STORAGE_REFRESH) || localStorage.getItem('refreshToken')
+}
+
+function authHeadersExtra() {
+  const token = getStoredAccessToken()
+  const headers = {}
   if (token) headers['Authorization'] = `Bearer ${token}`
   return headers
 }
 
-export async function login(username, password) {
-  const res = await fetch(`${API_BASE}/auth/login`, {
+function getAuthHeaders() {
+  return { 'Content-Type': 'application/json', ...authHeadersExtra() }
+}
+
+export function persistAuthTokens(data) {
+  if (data?.accessToken) localStorage.setItem(STORAGE_ACCESS, data.accessToken)
+  else localStorage.removeItem(STORAGE_ACCESS)
+  if (data?.refreshToken) localStorage.setItem(STORAGE_REFRESH, data.refreshToken)
+  else localStorage.removeItem(STORAGE_REFRESH)
+}
+
+export function clearAuthTokens() {
+  localStorage.removeItem(STORAGE_ACCESS)
+  localStorage.removeItem(STORAGE_REFRESH)
+  localStorage.removeItem('authToken')
+}
+
+export async function login(email, password) {
+  const res = await fetch(apiRoutes.authLogin(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ email, password }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.message || 'Login failed')
   }
   const data = await res.json().catch(() => ({}))
-  if (data.token) localStorage.setItem('authToken', data.token)
+  persistAuthTokens(data)
   return data
 }
 
 export async function logout() {
   try {
-    await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' })
+    const refreshToken = getStoredRefreshToken()
+    await fetch(apiRoutes.authLogout(), {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      credentials: 'include',
+      body: JSON.stringify({ refreshToken }),
+    })
   } finally {
-    localStorage.removeItem('authToken')
+    clearAuthTokens()
   }
 }
 
+function normalizeList(data) {
+  if (Array.isArray(data)) return data
+  if (data?.content) return data.content
+  const e = data?._embedded
+  if (e?.versusList) return e.versusList
+  if (e?.users) return e.users
+  return []
+}
+
 export async function getVersusList() {
-  const res = await fetch(`${API_BASE}/versus`, {
+  const res = await fetch(apiRoutes.versusList(), {
     headers: getAuthHeaders(),
     credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to load versus list')
   const data = await res.json()
-  return Array.isArray(data) ? data : data.content ?? data._embedded?.versusList ?? []
+  return normalizeList(data)
 }
 
 export async function getVersus(id) {
-  const res = await fetch(`${API_BASE}/versus/${id}`, {
+  const res = await fetch(apiRoutes.versusById(id), {
     headers: getAuthHeaders(),
     credentials: 'include',
   })
@@ -57,11 +100,9 @@ export async function createVersus(payload) {
   if (payload.image1) formData.append('image1', payload.image1)
   if (payload.image2) formData.append('image2', payload.image2)
 
-  const token = localStorage.getItem('authToken')
-  const headers = {}
-  if (token) headers['Authorization'] = `Bearer ${token}`
+  const headers = authHeadersExtra()
 
-  const res = await fetch(`${API_BASE}/versus`, {
+  const res = await fetch(apiRoutes.versusList(), {
     method: 'POST',
     headers,
     credentials: 'include',
@@ -81,11 +122,9 @@ export async function updateVersus(id, payload) {
   if (payload.image1) formData.append('image1', payload.image1)
   if (payload.image2) formData.append('image2', payload.image2)
 
-  const token = localStorage.getItem('authToken')
-  const headers = {}
-  if (token) headers['Authorization'] = `Bearer ${token}`
+  const headers = authHeadersExtra()
 
-  const res = await fetch(`${API_BASE}/versus/${id}`, {
+  const res = await fetch(apiRoutes.versusById(id), {
     method: 'PUT',
     headers,
     credentials: 'include',
@@ -99,10 +138,43 @@ export async function updateVersus(id, payload) {
 }
 
 export async function deleteVersus(id) {
-  const res = await fetch(`${API_BASE}/versus/${id}`, {
+  const res = await fetch(apiRoutes.versusById(id), {
     method: 'DELETE',
     headers: getAuthHeaders(),
     credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to delete versus')
+}
+
+export async function getUsers() {
+  const res = await fetch(apiRoutes.users(), {
+    headers: getAuthHeaders(),
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to load users')
+  const data = await res.json()
+  return normalizeList(data)
+}
+
+export async function createUser({ email, password }) {
+  const res = await fetch(apiRoutes.userCreate(), {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+    body: JSON.stringify({ email, password }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.message || 'Failed to create user')
+  }
+  return res.json().catch(() => ({}))
+}
+
+export async function deleteUser(id) {
+  const res = await fetch(apiRoutes.userDelete(id), {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to delete user')
 }
