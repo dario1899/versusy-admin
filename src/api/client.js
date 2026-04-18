@@ -39,7 +39,6 @@ export async function login(email, password) {
   const res = await fetch(apiRoutes.authLogin(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
     body: JSON.stringify({ email, password }),
   })
   if (!res.ok) {
@@ -57,7 +56,6 @@ export async function logout() {
     await fetch(apiRoutes.authLogout(), {
       method: 'POST',
       headers: getAuthHeaders(),
-      credentials: 'include',
       body: JSON.stringify({ refreshToken }),
     })
   } finally {
@@ -77,7 +75,6 @@ function normalizeList(data) {
 export async function getVersusList() {
   const res = await fetch(apiRoutes.versusList(), {
     headers: getAuthHeaders(),
-    credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to load versus list')
   const data = await res.json()
@@ -87,7 +84,6 @@ export async function getVersusList() {
 export async function getVersus(id) {
   const res = await fetch(apiRoutes.versusById(id), {
     headers: getAuthHeaders(),
-    credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to load versus')
   return res.json()
@@ -105,7 +101,6 @@ export async function createVersus(payload) {
   const res = await fetch(apiRoutes.versusList(), {
     method: 'POST',
     headers,
-    credentials: 'include',
     body: formData,
   })
   if (!res.ok) {
@@ -127,7 +122,6 @@ export async function updateVersus(id, payload) {
   const res = await fetch(apiRoutes.versusById(id), {
     method: 'PUT',
     headers,
-    credentials: 'include',
     body: formData,
   })
   if (!res.ok) {
@@ -141,7 +135,6 @@ export async function deleteVersus(id) {
   const res = await fetch(apiRoutes.versusById(id), {
     method: 'DELETE',
     headers: getAuthHeaders(),
-    credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to delete versus')
 }
@@ -149,7 +142,6 @@ export async function deleteVersus(id) {
 export async function getUsers() {
   const res = await fetch(apiRoutes.users(), {
     headers: getAuthHeaders(),
-    credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to load users')
   const data = await res.json()
@@ -160,7 +152,6 @@ export async function createUser({ email, password }) {
   const res = await fetch(apiRoutes.userCreate(), {
     method: 'POST',
     headers: getAuthHeaders(),
-    credentials: 'include',
     body: JSON.stringify({ email, password }),
   })
   if (!res.ok) {
@@ -174,7 +165,6 @@ export async function deleteUser(id) {
   const res = await fetch(apiRoutes.userDelete(id), {
     method: 'DELETE',
     headers: getAuthHeaders(),
-    credentials: 'include',
   })
   if (!res.ok) throw new Error('Failed to delete user')
 }
