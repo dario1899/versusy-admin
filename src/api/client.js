@@ -3,6 +3,20 @@ import { apiRoutes } from './routes'
 const STORAGE_ACCESS = 'accessToken'
 const STORAGE_REFRESH = 'refreshToken'
 
+/** Set from AuthProvider: clear UI session and navigate to login */
+let onUnauthorized = null
+
+export function setUnauthorizedHandler(fn) {
+  onUnauthorized = typeof fn === 'function' ? fn : null
+}
+
+function throwIfSessionExpired(res) {
+  if (res.status !== 401) return
+  clearAuthTokens()
+  onUnauthorized?.()
+  throw new Error('Session expired')
+}
+
 export function getStoredAccessToken() {
   return localStorage.getItem(STORAGE_ACCESS) || localStorage.getItem('authToken')
 }
@@ -76,6 +90,7 @@ export async function getVersusList() {
   const res = await fetch(apiRoutes.versusList(), {
     headers: getAuthHeaders(),
   })
+  throwIfSessionExpired(res)
   if (!res.ok) throw new Error('Failed to load versus list')
   const data = await res.json()
   return normalizeList(data)
@@ -85,6 +100,7 @@ export async function getVersus(id) {
   const res = await fetch(apiRoutes.versusById(id), {
     headers: getAuthHeaders(),
   })
+  throwIfSessionExpired(res)
   if (!res.ok) throw new Error('Failed to load versus')
   return res.json()
 }
@@ -103,6 +119,7 @@ export async function createVersus(payload) {
     headers,
     body: formData,
   })
+  throwIfSessionExpired(res)
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.message || 'Failed to create versus')
@@ -124,6 +141,7 @@ export async function updateVersus(id, payload) {
     headers,
     body: formData,
   })
+  throwIfSessionExpired(res)
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.message || 'Failed to update versus')
@@ -136,6 +154,7 @@ export async function deleteVersus(id) {
     method: 'DELETE',
     headers: getAuthHeaders(),
   })
+  throwIfSessionExpired(res)
   if (!res.ok) throw new Error('Failed to delete versus')
 }
 
@@ -143,6 +162,7 @@ export async function getUsers() {
   const res = await fetch(apiRoutes.users(), {
     headers: getAuthHeaders(),
   })
+  throwIfSessionExpired(res)
   if (!res.ok) throw new Error('Failed to load users')
   const data = await res.json()
   return normalizeList(data)
@@ -154,6 +174,7 @@ export async function createUser({ email, password }) {
     headers: getAuthHeaders(),
     body: JSON.stringify({ email, password }),
   })
+  throwIfSessionExpired(res)
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.message || 'Failed to create user')
@@ -166,5 +187,6 @@ export async function deleteUser(id) {
     method: 'DELETE',
     headers: getAuthHeaders(),
   })
+  throwIfSessionExpired(res)
   if (!res.ok) throw new Error('Failed to delete user')
 }

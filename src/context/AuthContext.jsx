@@ -1,11 +1,21 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import * as api from '../api/client'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.setUnauthorizedHandler(() => {
+      setUser(null)
+      navigate('/login', { replace: true })
+    })
+    return () => api.setUnauthorizedHandler(null)
+  }, [navigate])
 
   useEffect(() => {
     if (api.getStoredAccessToken()) setUser({ username: 'Admin' })
