@@ -6,8 +6,8 @@ function name(item, side) {
   return item[key] || item[`name${side}`] || '—'
 }
 
-export default function VersusList({ items, onEdit, onDelete }) {
-  if (!items.length) {
+export default function VersusList({ items, empty, onEdit, onDelete }) {
+  if (empty) {
     return (
       <div className="versus-list-empty">
         No versus yet. Create one with “New Versus”.

@@ -86,14 +86,25 @@ function normalizeList(data) {
   return []
 }
 
-export async function getVersusList() {
-  const res = await fetch(apiRoutes.versusList(), {
+function parseVersusPageDto(data, fallbackPage, fallbackSize) {
+  const items = Array.isArray(data?.content) ? data.content : []
+  return {
+    items,
+    page: data.page ?? fallbackPage,
+    size: data.size ?? fallbackSize,
+    totalPages: data.totalPages ?? 0,
+    totalElements: data.totalElements ?? 0,
+  }
+}
+
+export async function getVersusList(page = 0, size = 6) {
+  const res = await fetch(apiRoutes.versusList({ page, size }), {
     headers: getAuthHeaders(),
   })
   throwIfSessionExpired(res)
   if (!res.ok) throw new Error('Failed to load versus list')
   const data = await res.json()
-  return normalizeList(data)
+  return parseVersusPageDto(data, page, size)
 }
 
 export async function getVersus(id) {
@@ -114,7 +125,7 @@ export async function createVersus(payload) {
 
   const headers = authHeadersExtra()
 
-  const res = await fetch(apiRoutes.versusList(), {
+  const res = await fetch(apiRoutes.versusCreate(), {
     method: 'POST',
     headers,
     body: formData,

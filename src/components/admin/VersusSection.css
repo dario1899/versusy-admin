@@ -1,0 +1,88 @@
+.versus-section-toolbar {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.versus-page-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.versus-page-size select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.versus-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.versus-pagination-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.versus-pagination-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.versus-pagination-page {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.versus-pagination-page:hover {
+  color: var(--text);
+  background: var(--bg-input);
+}
+
+.versus-pagination-page-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.versus-pagination-page-active:hover {
+  background: var(--accent-hover);
+  color: white;
+}
+
+.versus-pagination-summary {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.versus-pagination-total {
+  color: var(--text-muted);
+}
