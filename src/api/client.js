@@ -97,7 +97,7 @@ function parseVersusPageDto(data, fallbackPage, fallbackSize) {
   }
 }
 
-export async function getVersusList(page = 0, size = 6) {
+export async function getVersusList(page = 0, size = 4) {
   const res = await fetch(apiRoutes.versusList({ page, size }), {
     headers: getAuthHeaders(),
   })

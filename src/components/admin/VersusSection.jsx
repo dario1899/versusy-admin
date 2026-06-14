@@ -12,7 +12,7 @@ export default function VersusSection({ setError }) {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(6)
+  const [pageSize, setPageSize] = useState(4)
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
 

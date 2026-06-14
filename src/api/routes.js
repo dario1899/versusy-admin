@@ -7,7 +7,7 @@ export const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 export const apiRoutes = {
   authLogin: () => `${API_BASE}/v1/auth/login`,
   authLogout: () => `${API_BASE}/v1/auth/logout`,
-  versusList: ({ page = 0, size = 6 } = {}) => {
+  versusList: ({ page = 0, size = 4 } = {}) => {
     const params = new URLSearchParams({
       page: String(page),
       size: String(size),
