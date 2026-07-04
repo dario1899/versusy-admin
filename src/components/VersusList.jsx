@@ -11,6 +11,11 @@ function imageId(item, side) {
   return item[key] ?? item[`image${side}Id`] ?? null
 }
 
+function versusTag(item) {
+  const value = item.versusTag ?? item.tag ?? ''
+  return value == null ? '' : String(value)
+}
+
 export default function VersusList({ items, empty, onEdit, onDelete }) {
   if (empty) {
     return (
@@ -24,6 +29,10 @@ export default function VersusList({ items, empty, onEdit, onDelete }) {
     <div className="versus-list">
       {items.map((item) => (
         <article key={item.id} className="versus-card">
+          <div className="versus-card-tag">
+            <span className="versus-card-tag-label">Tag</span>
+            <span className="versus-card-tag-value">{versusTag(item)}</span>
+          </div>
           <div className="versus-card-images">
             <div className="versus-card-side">
               <div className="versus-card-image-wrap">
@@ -40,7 +49,13 @@ export default function VersusList({ items, empty, onEdit, onDelete }) {
             </div>
           </div>
           <div className="versus-card-actions">
-            <button type="button" className="btn btn-ghost" onClick={() => onEdit(item.id)}>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              disabled
+              aria-disabled="true"
+              title="Edit is not available yet"
+            >
               Edit
             </button>
             <button type="button" className="btn btn-danger" onClick={() => onDelete(item.id)}>

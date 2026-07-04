@@ -120,6 +120,7 @@ export async function createVersus(payload) {
   const formData = new FormData()
   formData.append('name1', payload.name1)
   formData.append('name2', payload.name2)
+  formData.append('versusTag', payload.versusTag ?? '')
   if (payload.image1) formData.append('image1', payload.image1)
   if (payload.image2) formData.append('image2', payload.image2)
 
@@ -142,6 +143,7 @@ export async function updateVersus(id, payload) {
   const formData = new FormData()
   formData.append('name1', payload.name1)
   formData.append('name2', payload.name2)
+  formData.append('versusTag', payload.versusTag ?? '')
   if (payload.image1) formData.append('image1', payload.image1)
   if (payload.image2) formData.append('image2', payload.image2)
 

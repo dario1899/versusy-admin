@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import * as api from '../api/client'
 import './VersusForm.css'
 
-const initialForm = { name1: '', name2: '', image1: null, image2: null }
+const initialForm = { name1: '', name2: '', versusTag: '', image1: null, image2: null }
 
 export default function VersusForm({ versusId, onClose, onSuccess }) {
   const [form, setForm] = useState(initialForm)
@@ -18,6 +18,7 @@ export default function VersusForm({ versusId, onClose, onSuccess }) {
       setForm({
         name1: data.name1 ?? data.name_1 ?? '',
         name2: data.name2 ?? data.name_2 ?? '',
+        versusTag: data.versusTag ?? '',
         image1: null,
         image2: null,
       })
@@ -100,6 +101,15 @@ export default function VersusForm({ versusId, onClose, onSuccess }) {
               />
             </label>
           </div>
+          <label className="user-form-full">
+            Tag
+            <input
+              type="text"
+              value={form.versusTag}
+              onChange={(e) => update({ versusTag: e.target.value })}
+              placeholder="Optional tag"
+            />
+          </label>
           <div className="versus-form-actions">
             <button type="button" className="btn btn-ghost" onClick={onClose}>
               Cancel
