@@ -9,8 +9,8 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '/api': {
-        // target: 'https://v1-versusy-928473098122.europe-west1.run.app',
-        target: 'http://localhost:8080',
+        target: 'https://v1-versusy-928473098122.europe-west1.run.app',
+        // target: 'http://localhost:8080',
         changeOrigin: true,
       },
     },
