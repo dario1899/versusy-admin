@@ -169,6 +169,16 @@ export async function deleteVersus(id) {
   if (!res.ok) throw new Error('Failed to delete versus')
 }
 
+export async function fetchVersusPicture(imageId) {
+  const res = await fetch(apiRoutes.versusPicture(imageId), {
+    headers: authHeadersExtra(),
+  })
+  throwIfSessionExpired(res)
+  if (!res.ok) throw new Error('Failed to load image')
+  const blob = await res.blob()
+  return URL.createObjectURL(blob)
+}
+
 export async function getUsers() {
   const res = await fetch(apiRoutes.users(), {
     headers: getAuthHeaders(),

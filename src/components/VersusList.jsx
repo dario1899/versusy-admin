@@ -1,9 +1,14 @@
-import { getImageSrc } from '../utils/imageSrc'
+import VersusPicture from './VersusPicture'
 import './VersusList.css'
 
 function name(item, side) {
   const key = side === 1 ? 'name1' : 'name2'
   return item[key] || item[`name${side}`] || '—'
+}
+
+function imageId(item, side) {
+  const key = side === 1 ? 'image1Id' : 'image2Id'
+  return item[key] ?? item[`image${side}Id`] ?? null
 }
 
 export default function VersusList({ items, empty, onEdit, onDelete }) {
@@ -22,22 +27,14 @@ export default function VersusList({ items, empty, onEdit, onDelete }) {
           <div className="versus-card-images">
             <div className="versus-card-side">
               <div className="versus-card-image-wrap">
-                {getImageSrc(item, 1) ? (
-                  <img src={getImageSrc(item, 1)} alt={name(item, 1)} />
-                ) : (
-                  <div className="versus-card-placeholder">No image</div>
-                )}
+                <VersusPicture imageId={imageId(item, 1)} alt={name(item, 1)} />
               </div>
               <span className="versus-card-name">{name(item, 1)}</span>
             </div>
             <span className="versus-card-vs">VS</span>
             <div className="versus-card-side">
               <div className="versus-card-image-wrap">
-                {getImageSrc(item, 2) ? (
-                  <img src={getImageSrc(item, 2)} alt={name(item, 2)} />
-                ) : (
-                  <div className="versus-card-placeholder">No image</div>
-                )}
+                <VersusPicture imageId={imageId(item, 2)} alt={name(item, 2)} />
               </div>
               <span className="versus-card-name">{name(item, 2)}</span>
             </div>

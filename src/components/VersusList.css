@@ -53,6 +53,36 @@
   justify-content: center;
   color: var(--text-muted);
   font-size: 0.8rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.versus-card-placeholder-error {
+  color: #fca5a5;
+}
+
+.versus-card-image-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-input);
+}
+
+.versus-card-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: versus-spin 0.7s linear infinite;
+}
+
+@keyframes versus-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .versus-card-name {

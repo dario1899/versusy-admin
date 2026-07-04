@@ -16,6 +16,8 @@ export const apiRoutes = {
   },
   versusCreate: () => `${API_BASE}/versus`,
   versusById: (id) => `${API_BASE}/versus/${encodeURIComponent(id)}`,
+  versusPicture: (imageId) =>
+    `${API_BASE}/versus/picture/${encodeURIComponent(imageId)}`,
   /** GET – list users */
   users: () => `${API_BASE}/user/all`,
   /** POST – create user (distinct name avoids clashing with client `createUser` export) */
