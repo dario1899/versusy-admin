@@ -15,6 +15,7 @@ export default function VersusSection({ setError }) {
   const [pageSize, setPageSize] = useState(4)
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
+  const [listRefreshKey, setListRefreshKey] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -47,7 +48,7 @@ export default function VersusSection({ setError }) {
 
     loadVersus()
     return () => { cancelled = true }
-  }, [page, pageSize])
+  }, [page, pageSize, listRefreshKey])
 
   function handleFormClose() {
     setShowForm(false)
@@ -57,6 +58,7 @@ export default function VersusSection({ setError }) {
   function handleFormSuccess() {
     handleFormClose()
     setPage(0)
+    setListRefreshKey((k) => k + 1)
   }
 
   function handlePageSizeChange(e) {
